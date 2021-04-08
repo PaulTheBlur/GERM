@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/PaulTheBlur/GERM/data"
+	"github.com/PaulTheBlur/GERM/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -18,7 +18,9 @@ func main() {
 
 	sm := mux.NewRouter()
 
-	data.AddHandlers(l)
+	handlers.AddHandlers(l, sm)
+
+	http.Handle("/", sm)
 
 	s := &http.Server{
 		Addr:         ":9090",

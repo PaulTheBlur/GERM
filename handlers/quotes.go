@@ -1,30 +1,19 @@
 package handlers
 
 import (
-	"context"
 	"log"
-	"net/http"
-	"os"
-	"os/signal"
-	"time"
 
-	"github.com/PaulTheBlur/GERM/data"
-	"github.com/PaulTheBlur/GERM/handlers"
+	"github.com/PaulTheBlur/GERM/factories"
 	"github.com/gorilla/mux"
 )
 
-func AddHandlers(l log.logger, sm *mux.Router) {
-	qh := handlers.QuoteHeaders(l)
+func AddHandlers(l *log.Logger, sm *mux.Router) {
+	qh := factories.NewQuoteHeaders(l)
 
-	grQH := sm.Methods(http.MethodGet).Subrouter()
-	grQH.HandleFunc("/quoteheader/{id:[0-9]+}", qh.GetQuoteHeaders)
+	// grQH := sm.Methods(http.MethodGet).Subrouter()
+	// grQH.HandleFunc("/quoteheader/{id:[0-9]+}", qh.GetQuoteHeaders)
+	sm.HandleFunc("/quoteheader/{id:[0-9]+}", qh.GetQuoteHeaders).Methods("GET")
+	l.Println("GET /quoteheader added")
 
-	//	putRouter := sm.Methods(http.MethodPut).Subrouter()
-	//	putRouter.HandleFunc("/products/{id:[0-9]+}", qh.UpdateProduct)
 	//	putRouter.Use(ph.MiddlewareProductsValidation)
-
-	//	postRouter := sm.Methods(http.MethodPost).Subrouter()
-	//	postRouter.HandleFunc("/products", qh.AddProduct)
-	//	postRouter.Use(ph.MiddlewareProductsValidation)
-
 }
