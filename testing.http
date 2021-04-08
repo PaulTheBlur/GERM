@@ -1,0 +1,4 @@
+### Get Products
+GET http://localhost:9090/quoteheader/1
+Accept: application/hal+json
+
