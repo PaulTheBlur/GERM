@@ -5,16 +5,14 @@ import (
 	"net/http"
 	"strconv"
 
+	"database/sql"
+
 	"github.com/PaulTheBlur/GERM/data"
 	"github.com/gorilla/mux"
 )
 
-type QuoteHeadersIntf struct {
-	l *log.Logger
-}
-
-func NewQuoteHeaders(l *log.Logger) *QuoteHeadersIntf {
-	return &QuoteHeadersIntf{l}
+func NewQuoteHeaders(l *log.Logger, db *sql.DB) *QuoteHeadersIntf {
+	return &QuoteHeadersIntf{l, db}
 }
 
 func (p *QuoteHeadersIntf) GetQuoteHeaders(rw http.ResponseWriter, r *http.Request) {
@@ -26,10 +24,15 @@ func (p *QuoteHeadersIntf) GetQuoteHeaders(rw http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	lp := data.GetQuoteHeaders(id)
+	lp, err := data.GetQuoteHeaders(p, id)
+	if err != nil {
+		http.Error(rw, "Unable to get quote headers", http.StatusInternalServerError)
+		return
+	}
 	err = lp.ToJSON(rw)
 	if err != nil {
 		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
+		return
 	}
 }
 

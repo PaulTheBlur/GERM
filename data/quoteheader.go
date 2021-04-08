@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -33,7 +34,43 @@ func UpdateProduct(id int, p *QuoteHeader) error {
 
 var ErrPQuoteHeaderNotFound = fmt.Errorf("Quote Header not found")
 
-func GetQuoteHeaders(id int) QuoteHeaders {
+func GetQuoteHeaders(p *QuoteHeadersIntf, id int) (QuoteHeaders, error) {
 	// Add in get here
-	return nil
+
+	ctx := context.Background()
+
+	// Check if database is alive.
+	err := p.db.PingContext(ctx)
+	if err != nil {
+		return -1, err
+	}
+
+	tsql := fmt.Sprintf("SELECT Id, Name, Location FROM TestSchema.Employees;")
+
+	// Execute query
+	rows, err := db.QueryContext(ctx, tsql)
+	if err != nil {
+		return -1, err
+	}
+
+	defer rows.Close()
+
+	var count int
+
+	// Iterate through the result set.
+	for rows.Next() {
+		var name, location string
+		var id int
+
+		// Get values from row.
+		err := rows.Scan(&id, &name, &location)
+		if err != nil {
+			return -1, err
+		}
+
+		fmt.Printf("ID: %d, Name: %s, Location: %s\n", id, name, location)
+		count++
+	}
+
+	return count, nil
 }
