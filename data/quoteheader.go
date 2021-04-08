@@ -5,7 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+
+	"github.com/PaulTheBlur/GERM/types"
 )
+
+//type QuoteHeadersIntf = myTypes.QuoteHeadersIntf
 
 type QuoteHeader struct {
 	ID int `json:"id"`
@@ -34,23 +38,25 @@ func UpdateProduct(id int, p *QuoteHeader) error {
 
 var ErrPQuoteHeaderNotFound = fmt.Errorf("Quote Header not found")
 
-func GetQuoteHeaders(p *QuoteHeadersIntf, id int) (QuoteHeaders, error) {
+func GetQuoteHeaders(p *types.QuoteHeadersIntf, id int) (QuoteHeaders, error) {
 	// Add in get here
-
 	ctx := context.Background()
 
+	p1 := types.NewQuoteHeadersIntf(p)
+
 	// Check if database is alive.
+
 	err := p.db.PingContext(ctx)
 	if err != nil {
-		return -1, err
+		return nil, err
 	}
 
 	tsql := fmt.Sprintf("SELECT Id, Name, Location FROM TestSchema.Employees;")
 
 	// Execute query
-	rows, err := db.QueryContext(ctx, tsql)
+	rows, err := p1.db.QueryContext(ctx, tsql)
 	if err != nil {
-		return -1, err
+		return nil, err
 	}
 
 	defer rows.Close()
@@ -65,12 +71,12 @@ func GetQuoteHeaders(p *QuoteHeadersIntf, id int) (QuoteHeaders, error) {
 		// Get values from row.
 		err := rows.Scan(&id, &name, &location)
 		if err != nil {
-			return -1, err
+			return nil, err
 		}
 
 		fmt.Printf("ID: %d, Name: %s, Location: %s\n", id, name, location)
 		count++
 	}
 
-	return count, nil
+	return nil, nil
 }

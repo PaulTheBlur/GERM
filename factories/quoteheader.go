@@ -11,6 +11,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type QuoteHeadersIntf struct {
+	l  *log.Logger
+	db *sql.DB
+}
+
 func NewQuoteHeaders(l *log.Logger, db *sql.DB) *QuoteHeadersIntf {
 	return &QuoteHeadersIntf{l, db}
 }
