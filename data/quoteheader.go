@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/PaulTheBlur/Projects/GERM/handlers"
-	"github.com/PaulTheBlur/Projects/GERM/data"
+	"github.com/PaulTheBlur/GERM/data"
+	"github.com/PaulTheBlur/GERM/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -27,6 +27,7 @@ func (p *Products) GetProducts(rw http.ResponseWriter, h *http.Request) {
 		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
 	}
 }
+
 /*
 func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle POST Products")

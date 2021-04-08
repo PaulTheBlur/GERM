@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/PaulTheBlur/Projects/GERM/data"
+	"github.com/PaulTheBlur/GERM/data"
 	"github.com/gorilla/mux"
 )
 
