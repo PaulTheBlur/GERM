@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/PaulTheBlur/GERM/factories"
+	_ "github.com/PaulTheBlur/GERM/types"
 	"github.com/gorilla/mux"
 )
 
