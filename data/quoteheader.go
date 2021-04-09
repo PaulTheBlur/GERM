@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
+	"time"
 
 	"github.com/PaulTheBlur/GERM/types"
 )
@@ -12,7 +14,22 @@ import (
 type QuoteHeadersIntf types.QuoteHeadersIntf
 
 type QuoteHeader struct {
-	ID int `json:"id"`
+	EventID            int       `json:"eventid"`
+	EventDescription   string    `json:"eventdescription"`
+	ArrivalDate        time.Time `json:"arrivaldate"`
+	StartDate          time.Time `json:"startdate"`
+	EndDate            time.Time `json:"enddate"`
+	QuoteID            int       `json:"quoteid"`
+	EventModuleID      int       `json:"eventmoduleid"`
+	Description        string    `json:"description"`
+	QuoteDate          time.Time `json:"quotedate"`
+	FinalQuote         bool      `json:"finalquote"`
+	ForecastFactor     float32   `json:"forecastfactor"`
+	TotalQuote         float32   `json:"totalquote"`
+	TotalNet           float32   `json:"totalnet"`
+	TotalGross         float32   `json:"totalgross"`
+	UnknownChargeTypes bool      `json:"unknownchargetypes"`
+	NegativeElements   bool      `json:"negativeelements"`
 }
 
 type QuoteHeaders []*QuoteHeader
@@ -36,7 +53,7 @@ func UpdateProduct(id int, p *QuoteHeader) error {
 	return nil
 }
 
-var ErrPQuoteHeaderNotFound = fmt.Errorf("Quote Header not found")
+var ErrPQuoteHeaderNotFound = fmt.Errorf("quote header not found")
 
 func GetQuoteHeaders(p *types.QuoteHeadersIntf, id int) (QuoteHeaders, error) {
 	p.L.Println("Get QuoteHeader ", id)
@@ -50,7 +67,7 @@ func GetQuoteHeaders(p *types.QuoteHeadersIntf, id int) (QuoteHeaders, error) {
 		return nil, err
 	}
 
-	tsql := fmt.Sprintf("SELECT Id, Name, Location FROM TestSchema.Employees;")
+	tsql := fmt.Sprintf("exec dbo.PulseGetEventModuleQuotes %v", id)
 
 	// Execute query
 	rows, err := p.DB.QueryContext(ctx, tsql)
@@ -60,21 +77,17 @@ func GetQuoteHeaders(p *types.QuoteHeadersIntf, id int) (QuoteHeaders, error) {
 
 	defer rows.Close()
 
-	// var count int
-
 	// // Iterate through the result set.
-	// for rows.Next() {
-	// 	var name, location string
-	// 	var id int
 
-	// 	// Get values from row.
-	// 	err := rows.Scan(&id, &name, &location)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
+	bks := make([]*QuoteHeader, 0)
+	for rows.Next() {
+		item := new(QuoteHeader)
+		err := rows.Scan(&item.EventID, &item.EventDescription, &item.ArrivalDate, &item.StartDate, &item.EndDate, &item.QuoteID, &item.EventModuleID, &item.Description, &item.QuoteDate, &item.FinalQuote, &item.ForecastFactor, &item.TotalQuote, &item.TotalNet, &item.TotalGross, &item.UnknownChargeTypes, &item.NegativeElements)
+		if err != nil {
+			return nil, fmt.Errorf(http.StatusText(500), 500)
+		}
+		bks = append(bks, item)
+	}
 
-	// 	count++
-	// }
-
-	return nil, nil
+	return bks, nil
 }
