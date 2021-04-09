@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -67,10 +68,10 @@ func GetQuoteHeaders(p *types.QuoteHeadersIntf, id int) (QuoteHeaders, error) {
 		return nil, err
 	}
 
-	tsql := fmt.Sprintf("exec dbo.PulseGetEventModuleQuotes %v", id)
+	tsql := fmt.Sprintf("exec dbo.PulseGetEventModuleQuotes @EventModuleID")
 
 	// Execute query
-	rows, err := p.DB.QueryContext(ctx, tsql)
+	rows, err := p.DB.QueryContext(ctx, tsql, sql.Named("EventModuleID", id))
 	if err != nil {
 		return nil, err
 	}
