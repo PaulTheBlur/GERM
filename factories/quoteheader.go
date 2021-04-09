@@ -8,20 +8,19 @@ import (
 	"database/sql"
 
 	"github.com/PaulTheBlur/GERM/data"
+	"github.com/PaulTheBlur/GERM/types"
 	"github.com/gorilla/mux"
 )
 
-type QuoteHeadersIntf struct {
-	l  *log.Logger
-	db *sql.DB
-}
+type QuoteHeadersIntf types.QuoteHeadersIntf
 
 func NewQuoteHeaders(l *log.Logger, db *sql.DB) *QuoteHeadersIntf {
 	return &QuoteHeadersIntf{l, db}
 }
 
 func (p *QuoteHeadersIntf) GetQuoteHeaders(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle GET QuoteHeaders")
+	p1 := &types.QuoteHeadersIntf{p.L, p.DB}
+	p.L.Println("Handle GET QuoteHeaders")
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -29,7 +28,7 @@ func (p *QuoteHeadersIntf) GetQuoteHeaders(rw http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	lp, err := data.GetQuoteHeaders(p, id)
+	lp, err := data.GetQuoteHeaders(p1, id)
 	if err != nil {
 		http.Error(rw, "Unable to get quote headers", http.StatusInternalServerError)
 		return

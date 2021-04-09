@@ -6,10 +6,6 @@ import (
 )
 
 type QuoteHeadersIntf struct {
-	l  *log.Logger
-	db *sql.DB
-}
-
-func NewQuoteHeadersIntf(value QuoteHeadersIntf) QuoteHeadersIntf {
-	return QuoteHeadersIntf(value)
+	L  *log.Logger
+	DB *sql.DB
 }
